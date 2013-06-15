@@ -5,7 +5,7 @@ if (Meteor.isClient) {
 
   Template.hello.events({
     'click input' : function () {
-      // template data, if any, is available in 'this'
+      window.open("https://api.instagram.com/oauth/authorize/?client_id=9bc60db22405424197bb2a287063e5f6&redirect_uri=http://gramcracker.meteor.com/_oauth/instagram&response_type=code", "instagram");
       if (typeof console !== 'undefined')
         console.log("You pressed the button");
     }
