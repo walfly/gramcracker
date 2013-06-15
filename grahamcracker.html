@@ -3,27 +3,34 @@
 </head>
 
 <body>
-  {{> login}}
+  {{> App}}
 </body>
 
 <template name="App">
-	{{#unless id}}
+  {{#unless username}}
     {{> login}}
   {{/unless}}
   {{#if judge}}
 	  {{> judge}}
-	{{/if}}
+  {{/if}}
 	{{#if player}}
 	  {{#if search}}
-		{{> search}}
+		  {{> search}}
 	  {{else}}
-		{{> playerBoard}}
+		  {{> playerBoard}}
+    {{/if}}
 	{{/if}}
 </template>
 
 
 <template name="login">
-  <h1>Login</h1>
-  <input type="text" value="enter a user name"/>
-  <input type="button" value="Click" />
+  <div id="log">
+    <h1>Login</h1>
+    <input id="submitUsername" type="text" placeholder="username"/>
+    <button>submit</button>
+  </div>
+</template>
+
+<template name="judge">
+  <span>stuff and things</span>
 </template>
