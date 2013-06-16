@@ -32,15 +32,15 @@
 </template>
 
 <template name="judgeBoard">
-  <span>{{prompt}}</span>
-  <span>the number submissions remaining is {{remains}}</span> 
+  <div>{{prompts}}</div>
+  <div>the number submissions remaining is {{remains}}</div> 
   {{#each submissions}}
-    {{> image}}
+    <img src="{{this.url}}">
   {{/each}}
 </template>
 
 <template name="image">
-  <img src="{{url}}"
+  <img src="{{url}}"/>
 </template>
 
 <template name="login">
@@ -60,6 +60,12 @@
 </template>
 
 <template name="playerBoard">
+  <div>{{prompts}}</div>
+  <div>player {{judger}} is the current judge</div>
+  <div>the number submissions remaining is {{remains}}</div> 
+  {{#each submissions}}
+    <img src="{{this.url}}">
+  {{/each}}
   {{#each hashterg}}
     <button data-hashtag="{{this}}">#{{this}}</button>
   {{/each}}

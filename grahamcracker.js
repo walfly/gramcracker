@@ -40,7 +40,7 @@ if (Meteor.isClient) {
     }
   };
   
-  Template.judgeBoard.prompt = function(){
+  Template.judgeBoard.prompts = function(){
     return Rounds.findOne({id: Rounds.find().count() - 1}).prompt;
   }
 
@@ -50,6 +50,20 @@ if (Meteor.isClient) {
   }
   
   Template.judgeBoard.remains = function(){
+    var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
+    return Players.find().count() - submissions.length;
+  }
+
+  Template.playerBoard.prompts = function(){
+    return Rounds.findOne({id: Rounds.find().count() - 1}).prompt;
+  }
+
+  Template.playerBoard.submissions = function(){
+    var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
+    return submissions;
+  }
+  
+  Template.playerBoard.remains = function(){
     var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
     return Players.find().count() - submissions.length;
   }
@@ -78,6 +92,10 @@ if (Meteor.isClient) {
     console.log(result);
     return result;
   };
+
+  Template.playerBoard.judger = function(){
+    return Players.findOne({isJudge: true}).username;
+  }
 
   Template.playerBoard.events({
     'click button': function(e){
