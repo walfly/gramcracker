@@ -29,6 +29,7 @@
 		  {{> playerBoard}}
     {{/if}}
 	{{/if}}
+  {{> scoreboard}}
 </template>
 
 <template name="judgeBoard">
@@ -83,4 +84,14 @@
       <img src="{{this}}">
     {{/each}}
   </div>
+</template>
+
+<template name="scoreboard">
+  {{#each players}}
+  <div>{{> player}}</div>
+  {{/each}}
+</template>
+
+<template name="player">
+  <span>{{username}} - {{score}}</span>
 </template>

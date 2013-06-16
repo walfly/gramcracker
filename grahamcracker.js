@@ -148,6 +148,14 @@ if (Meteor.isClient) {
     return false;
   };
 
+  Template.scoreboard.players = function(){
+    return Players.find();
+  };
+
+  Template.scoreboard.player = function(){
+
+  };
+
   Template.search.events({
     'click img': function(e) {
       var submissionURL = $(e.target).attr('src');
@@ -222,7 +230,7 @@ Meteor.methods({
   updateScore: function (user) {
     Players.update({username: user}, {$inc: {score:1}});
   },
-  
+
   removeJudge: function(){
     Players.update({}, {$set: {isJudge: false}}, {multi: true}); 
   },
