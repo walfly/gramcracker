@@ -8,12 +8,20 @@
 
 <template name="App">
   {{#unless username}}
-    {{> login}}
+    {{#unless rounds}}
+      {{> login}}
+    {{/unless}}
+  {{/unless}}
+  {{#unless rounds}}
+   {{#if enoughPlayers}}
+    {{> start}}
+   {{else}}
+     {{> waiting}}
+   {{/if}}
   {{/unless}}
   {{#if judge}}
-	  {{> judge}}
-  {{/if}}
-	{{#if player}}
+	  {{> judgeBoard}}
+  {{else}}
 	  {{#if search}}
 		  {{> search}}
 	  {{else}}
@@ -22,7 +30,9 @@
 	{{/if}}
 </template>
 
-
+<template name="judgeBoard">
+  <span>you are the judge</span>
+</template>
 <template name="login">
   <div id="log">
     <h1>Login</h1>
@@ -31,6 +41,14 @@
   </div>
 </template>
 
-<template name="judge">
-  <span>stuff and things</span>
+<template name="waiting">
+  <span>Waiting for more players</span>
+</template>
+
+<template name="start">
+  <button>start?</button>
+</template>
+
+<template name="playerBoard">
+  <span>you a player bitch</span>
 </template>
