@@ -82,11 +82,12 @@ if (Meteor.isClient) {
       dataType: 'jsonp',
       success: function(response) {
         console.log(response);
-        var $div = $('.images');
-        $div.empty();
+        var $imagesDiv = $('.search-images');
+        $imagesDiv.empty();
         $.each(response.data, function(index, item) {
           var $img = $('<img>').attr('src', item.images.low_resolution.url);
-          $div.append($img);
+          var $imgContainer = $('<div class="image"></div>').append($img);
+          $imagesDiv.append($imgContainer);
         });
       },
       error: function(error) {

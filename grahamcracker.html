@@ -34,11 +34,15 @@
 
 <template name="judgeBoard">
   <div>{{prompts}}</div>
-  <div>the number submissions remaining is {{remains}}</div> 
-  {{#each submissions}}
-    <img data-user="{{this.username}}" src="{{this.url}}">
-    <div>#{{this.hashtag}}</div>
-  {{/each}}
+  <div>the number submissions remaining is {{remains}}</div>
+  <div class="submissions">
+    {{#each submissions}}
+      <div class="image">
+        <img data-user="{{this.username}}" src="{{this.url}}"><br>
+        <span>#{{this.hashtag}}</span>
+      </div>
+    {{/each}}
+  </div>
 </template>
 
 <template name="image">
@@ -46,52 +50,64 @@
 </template>
 
 <template name="login">
-  <div id="log">
+  <div id="login">
     <h1>Login</h1>
-    <input id="submitUsername" type="text" placeholder="username"/>
-    <button>submit</button>
+    <input id="submitUsername" type="text" placeholder="Choose a username"/><br>
+    <button>Submit</button>
   </div>
 </template>
 
 <template name="waiting">
-  <span>Waiting for more players</span>
+  <span>Waiting for more players...</span>
 </template>
 
 <template name="start">
-  <button>start?</button>
+  <button>Start new game</button>
 </template>
 
 <template name="playerBoard">
-  <div>{{prompts}}</div>
-  <div>player {{judger}} is the current judge</div>
-  <div>the number submissions remaining is {{remains}}</div> 
-  {{#each submissions}}
-    <img src={{this.url}}>
-    <div>#{{this.hashtag}}</div>
-  {{/each}}
-  {{#unless chosen}}
-    {{#each hashterg}}
-      <button data-hashtag="{{this}}">#{{this}}</button>
+  <h2>{{prompts}}</h2>
+  <h3>Current judge: <em>{{judger}}</em></h3>
+  <span>Waiting on <em>{{remains}}</em> submissions</span> 
+  <div class="submissions">
+    {{#each submissions}}
+      <div class="image">
+        <img src={{this.url}}><br>
+        <span>#{{this.hashtag}}</span>
+      </div>
     {{/each}}
-  {{/unless}}
+  </div>
+  <div class="hashtags">
+    {{#unless chosen}}
+      {{#each hashterg}}
+        <button data-hashtag="{{this}}">#{{this}}</button><br>
+      {{/each}}
+    {{/unless}}
+  </div>
 </template>
 
 <template name="search">
-  <span>{{prompts}}</span>
-  <span>{{hasher}}}</span>
-  <div class="images">
+  <h2>{{prompts}}</h2>
+  <h3>{{hasher}}}</h3>
+  <div class="search-images">
     {{#each getImages}}
-      <img src="{{this}}">
+      <div class="image">
+        <img src="{{this}}">
+      </div>
     {{/each}}
   </div>
 </template>
 
 <template name="scoreboard">
-  {{#each players}}
-  <div>{{> player}}</div>
-  {{/each}}
+  <div class="scoreboard">
+    {{#each players}}
+      {{> player}}
+    {{/each}}
+  </div>
 </template>
 
 <template name="player">
-  <span>{{username}} - {{score}}</span>
+  <div class="player">
+    <h3>{{username}} - {{score}}</h3>
+  </div>
 </template>
