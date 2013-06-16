@@ -165,7 +165,7 @@ if (Meteor.isClient) {
   Template.judgeBoard.events({
     'click img': function(){
       var user = this.username;
-      Players.update({username: user}, {$inc: {score:1}});
+      Meteor.call('updateScore', user);
     }
   });
 
@@ -205,6 +205,9 @@ if (Meteor.isClient) {
 }
 
 Meteor.methods({
+  updateScore: function (user) {
+    Players.update({username: user}, {$inc: {score:1}});
+  },
   setFirstJudge: function () {
     Players.update({id: 0}, {$set: {isJudge: true}});
   },
