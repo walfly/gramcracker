@@ -42,8 +42,8 @@ if (Meteor.isClient) {
     }
   };
 
-  Template.judgeBoard.prompt = function(){
-    return Rounds.findOne({id: Rounds.find().count() - 1}).prompt;
+  Template.judgeBoard.prompts = function(){
+    return Rounds.findOne({id: Rounds.find().count() - 1}).prompta;
   };
 
   Template.judgeBoard.submissions = function(){
@@ -53,25 +53,11 @@ if (Meteor.isClient) {
 
   Template.judgeBoard.remains = function(){
     var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
-    return Players.find().count() - submissions.length;
+    return Players.find().count() - submissions.length -1;
   };
 
-  Template.playerBoard.prompt = function(){
-    return Rounds.findOne({id: Rounds.find().count() - 1}).prompt;
-  };
-
-  Template.playerBoard.submissions = function(){
-    var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
-    return submissions;
-  };
-
-  Template.playerBoard.remains = function(){
-    var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
-    return Players.find().count() - submissions.length;
-  };
-
-  Template.search.prompt = function(){
-    return Rounds.findOne({id: Rounds.find().count() - 1}).prompt;
+  Template.search.prompts = function(){
+    return Rounds.findOne({id: Rounds.find().count() - 1}).prompta;
   };
 
   Template.search.hasher = function() {
@@ -106,7 +92,7 @@ if (Meteor.isClient) {
   };
 
   Template.playerBoard.prompts = function(){
-    return Rounds.findOne({id: Rounds.find().count() - 1}).prompt;
+    return Rounds.findOne({id: Rounds.find().count() - 1}).prompta;
   }
 
   Template.playerBoard.submissions = function(){
@@ -116,7 +102,7 @@ if (Meteor.isClient) {
   
   Template.playerBoard.remains = function(){
     var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
-    return Players.find().count() - submissions.length;
+    return (Players.find().count() - 1) - submissions.length;
   }
 
   Template.image.url = function(){
@@ -190,7 +176,7 @@ if (Meteor.isClient) {
         prompt = result;
         Rounds.insert({
           id: Rounds.find().count(),
-          prompt: prompt,
+          prompta: prompt,
           submissions: [],
           winner: {}
         });

@@ -36,6 +36,7 @@
   <div>the number submissions remaining is {{remains}}</div> 
   {{#each submissions}}
     <img src="{{this.url}}">
+    <div>#{{this.hashtag}}</div>
   {{/each}}
 </template>
 
@@ -60,8 +61,7 @@
 </template>
 
 <template name="playerBoard">
-
-  <div>{{prompt}}</div>
+  <div>{{prompts}}</div>
   <div>player {{judger}} is the current judge</div>
   <div>the number submissions remaining is {{remains}}</div> 
   {{#each submissions}}
@@ -74,7 +74,7 @@
 </template>
 
 <template name="search">
-  <span>{{prompt}}</span>
+  <span>{{prompts}}</span>
   <span>{{hasher}}}</span>
   <div class="images">
     {{#each getImages}}
