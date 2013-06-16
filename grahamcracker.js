@@ -41,15 +41,21 @@ if (Meteor.isClient) {
   Template.login.events({
     'click button': function(){
       var username = document.getElementById("submitUsername").value;
-      Session.set("username", username);
-      Players.insert({
-        id: Players.find().count(),
-        username: username, 
-        score: 0, 
-        accessToken: '44947478.9bc60db.7d906225574340669fc0f9b21a6e9523', 
-        isJudge: false});
-    }
+      var hand;
+      Meteor.call('deal', function(error, result){
+        hand = result;
+        Session.set("username", username);
+        Players.insert({
+          id: Players.find().count(),
+          username: username, 
+          score: 0,
+          hashes: hand, 
+          accessToken: '44947478.9bc60db.7d906225574340669fc0f9b21a6e9523', 
+          isJudge: false})
+      });
+    } 
   });
+
   Template.start.events({
     'click button': function(){
       Rounds.insert({
@@ -70,6 +76,15 @@ Meteor.methods({
     console.log('sup');
     //Players.update({}, {isJudge: false}, {multi: true});
     Players.update({id: 0}, {$set: {isJudge: true}});
+  },
+  deal: function(){
+    var tags = Hashtags.findOne().hashtags;
+    var hand = {};
+    for(var i = 0; i < 5; i++){
+      hand[tags.pop()] = true;
+    }
+    Hashtags.update({}, {$set: {hashtags: tags}});
+    return hand;
   }
 })
 
@@ -77,6 +92,7 @@ if (Meteor.isServer) {
   Meteor.startup(function () {
     Players.remove({});
     Rounds.remove({});
+    Hashtags.remove({});
 
     if(Hashtags.find().count() === 0) {
       var hashes = [ 'love',
@@ -179,9 +195,7 @@ if (Meteor.isServer) {
                     'likeforlike',
                     'gang_family',
                     'boyfriend'];
-      for(var i = 0; i < hashes.length; i++){
-        Hashtags.insert({id: i, hashtag: hashes[i]});
-      }
+      Hashtags.insert({hashtags: hashes});
     }
   });
 }
