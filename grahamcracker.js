@@ -58,6 +58,15 @@ if (Meteor.isClient) {
     console.log(this);
   }
 
+  Template.App.search = function() {
+    var searchVal = Session.get('search');
+    if(searchVal){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Template.playerBoard.hashterg = function(){
     var playershashers = Players.findOne({username: Session.get('username')}).hashes;
     var result = [];
@@ -69,6 +78,13 @@ if (Meteor.isClient) {
     console.log(result);
     return result;
   };
+
+  Template.playerBoard.events({
+    'click button': function(e){
+      var card = e.target.innerHTML.slice(1);
+      Session.set('search', card);
+    }
+  })
 
 
   Template.login.events({

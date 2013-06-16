@@ -60,8 +60,11 @@
 </template>
 
 <template name="playerBoard">
-  <span>something</span>
   {{#each hashterg}}
-    <span>#{{this}}</span>
+    <button data-hashtag="{{this}}">#{{this}}</button>
   {{/each}}
+</template>
+
+<template name="search">
+  <span>search template aqui</span>
 </template>
