@@ -37,6 +37,10 @@ if (Meteor.isClient) {
       return false;
     }
   };
+  
+  Template.judgeBoard.prompt = function(){
+    return Rounds.findOne({id: Rounds.find().count() - 1}).prompt;
+  }
 
   Template.login.events({
     'click button': function(){
@@ -62,10 +66,7 @@ if (Meteor.isClient) {
         submissions: {},
         winner: {}
       });
-      Meteor.call('setFirstJudge', function(){
-        console.log(Players.find({isJudge: false}).count());
-        console.log(Rounds.find());
-      });
+      Meteor.call('setFirstJudge');
     }
   })
 
@@ -73,8 +74,6 @@ if (Meteor.isClient) {
 
 Meteor.methods({
   setFirstJudge: function () {
-    console.log('sup');
-    //Players.update({}, {isJudge: false}, {multi: true});
     Players.update({id: 0}, {$set: {isJudge: true}});
   },
   deal: function(){
