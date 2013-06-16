@@ -4,7 +4,9 @@ Hashtags = new Meteor.Collection('hashtags');
 Prompts = new Meteor.Collection('prompts');
 
 if (Meteor.isClient) {
-
+  Handlebars.registerHelper('debugger', function() {
+    debugger;
+  });
 
   Template.App.username = function(){
     return Session.get('username');
@@ -15,7 +17,7 @@ if (Meteor.isClient) {
   };
 
   Template.App.enoughPlayers = function(){
-    return Players.find().count() > 3;
+    return Players.find().count() > 1;
   };
 
   Template.App.player = function(){
@@ -39,24 +41,73 @@ if (Meteor.isClient) {
       return false;
     }
   };
-  
+
   Template.judgeBoard.prompt = function(){
     return Rounds.findOne({id: Rounds.find().count() - 1}).prompt;
-  }
+  };
 
   Template.judgeBoard.submissions = function(){
     var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
     return submissions;
-  }
-  
+  };
+
   Template.judgeBoard.remains = function(){
     var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
     return Players.find().count() - submissions.length;
-  }
+  };
+
+  Template.playerBoard.prompt = function(){
+    return Rounds.findOne({id: Rounds.find().count() - 1}).prompt;
+  };
+
+  Template.playerBoard.submissions = function(){
+    var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
+    return submissions;
+  };
+
+  Template.playerBoard.remains = function(){
+    var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
+    return Players.find().count() - submissions.length;
+  };
+
+  Template.search.prompt = function(){
+    return Rounds.findOne({id: Rounds.find().count() - 1}).prompt;
+  };
+
+  Template.search.hasher = function() {
+    return Session.get('search');
+  };
+
+  Template.search.accessToken = function() {
+    return Players.findOne({username: Session.get('username')}).accessToken;
+  };
+
+  Template.search.getImages = function() {
+    var hashtagQuery = Session.get('search');
+    var accessToken = Players.findOne({username: Session.get('username')}).accessToken;
+    console.log('hash', hashtagQuery);
+    console.log('tok', accessToken);
+    return $.ajax({
+      url: 'https://api.instagram.com/v1/tags/'+hashtagQuery+'/media/recent?access_token='+accessToken,
+      dataType: 'jsonp',
+      success: function(response) {
+        console.log(response);
+        var $div = $('.images');
+        $div.empty();
+        $.each(response.data, function(index, item) {
+          var $img = $('<img>').attr('src', item.images.low_resolution.url);
+          $div.append($img);
+        });
+      },
+      error: function(error) {
+        return error;
+      }
+    });
+  };
 
   Template.image.url = function(){
     console.log(this);
-  }
+  };
 
   Template.App.search = function() {
     var searchVal = Session.get('search');
@@ -65,7 +116,7 @@ if (Meteor.isClient) {
     } else {
       return false;
     }
-  }
+  };
 
   Template.playerBoard.hashterg = function(){
     var playershashers = Players.findOne({username: Session.get('username')}).hashes;
@@ -79,12 +130,20 @@ if (Meteor.isClient) {
     return result;
   };
 
+  Template.search.events({
+    'click img': function(e) {
+      var submissionURL = $(e.target).attr('src');
+      Meteor.call('setSubmission', submissionURL, Session.get('search'), Session.get('username'));
+      Session.set('search', null);
+    }
+  });
+
   Template.playerBoard.events({
     'click button': function(e){
       var card = e.target.innerHTML.slice(1);
       Session.set('search', card);
     }
-  })
+  });
 
 
   Template.login.events({
@@ -120,7 +179,6 @@ if (Meteor.isClient) {
       Meteor.call('setFirstJudge');
     }
   });
-
 }
 
 Meteor.methods({
@@ -141,6 +199,12 @@ Meteor.methods({
     prompt = prompts.pop();
     Prompts.update({}, {$set: {prompts: prompts}});
     return prompt;
+  },
+  setSubmission: function(imgurl, hash, username) {
+    var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
+    var submission = {url: imgurl, hashtag: hash, username: username};
+    submissions.push(submission);
+    Rounds.update({id: Rounds.find().count() - 1}, {$set: {submissions: submissions}});
   }
 });
 
