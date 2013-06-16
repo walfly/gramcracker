@@ -157,8 +157,9 @@ if (Meteor.isClient) {
   });
 
   Template.judgeBoard.events({
-    'click img': function(e){
-      console.log(e);
+    'click img': function(){
+      var user = this.username;
+      Players.update({username: user}, {$inc: {score:1}});
     }
   });
 
