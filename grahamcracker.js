@@ -137,7 +137,14 @@ if (Meteor.isClient) {
   }
 
   Template.playerBoard.chosen = function(){
-    return Session.get('chosen');
+    var round = Rounds.findOne({id: Rounds.find().count() - 1})
+    var submissions = round.submissions
+    for(var i = 0; i < submissions.length; i ++){
+      if(submissions[i].username === Session.get('username')){
+        return true;
+      }
+    } 
+    return false;
   }
 
   Template.search.events({
@@ -145,7 +152,6 @@ if (Meteor.isClient) {
       var submissionURL = $(e.target).attr('src');
       Meteor.call('setSubmission', submissionURL, Session.get('search'), Session.get('username'));
       Session.set('search', null);
-      Session.set('chosen', true);
     }
   });
 
