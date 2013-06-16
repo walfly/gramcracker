@@ -44,6 +44,20 @@ if (Meteor.isClient) {
     return Rounds.findOne({id: Rounds.find().count() - 1}).prompt;
   }
 
+  Template.judgeBoard.submissions = function(){
+    var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
+    return submissions;
+  }
+  
+  Template.judgeBoard.remains = function(){
+    var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
+    return Players.find().count() - submissions.length;
+  }
+
+  Template.image.url = function(){
+    console.log(this);
+  }
+
   Template.playerBoard.hashterg = function(){
     var playershashers = Players.findOne({username: Session.get('username')}).hashes;
     var result = [];
@@ -83,7 +97,7 @@ if (Meteor.isClient) {
         Rounds.insert({
           id: Rounds.find().count(),
           prompt: prompt,
-          submissions: {},
+          submissions: [],
           winner: {}
         });
       });
