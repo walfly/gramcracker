@@ -42,6 +42,7 @@ if (Meteor.isClient) {
     }
   };
 
+
   Template.judgeBoard.prompts = function(){
     return Rounds.findOne({id: Rounds.find().count() - 1}).prompta;
   };
@@ -150,6 +151,11 @@ if (Meteor.isClient) {
     }
   });
 
+  Template.judgeBoard.events({
+    'click img': function(e){
+      console.log(e);
+    }
+  });
 
   Template.login.events({
     'click button': function(){

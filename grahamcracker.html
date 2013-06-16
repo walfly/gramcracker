@@ -35,7 +35,7 @@
   <div>{{prompts}}</div>
   <div>the number submissions remaining is {{remains}}</div> 
   {{#each submissions}}
-    <img src="{{this.url}}">
+    <img data-user="{{this.username}}" src="{{this.url}}">
     <div>#{{this.hashtag}}</div>
   {{/each}}
 </template>
