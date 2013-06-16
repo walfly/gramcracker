@@ -1,6 +1,8 @@
 Players = new Meteor.Collection('players');
 Rounds = new Meteor.Collection('rounds');
 Hashtags = new Meteor.Collection('hashtags');
+Prompts = new Meteor.Collection('prompts');
+
 if (Meteor.isClient) {
 
 
@@ -10,11 +12,11 @@ if (Meteor.isClient) {
 
   Template.App.rounds = function(){
     return Rounds.find().count() > 0;
-  }
+  };
 
   Template.App.enoughPlayers = function(){
     return Players.find().count() > 3;
-  }
+  };
 
   Template.App.player = function(){
     if(Session.get('username')){
@@ -47,37 +49,37 @@ if (Meteor.isClient) {
         Session.set("username", username);
         Players.insert({
           id: Players.find().count(),
-          username: username, 
+          username: username,
           score: 0,
-          hashes: hand, 
-          accessToken: '44947478.9bc60db.7d906225574340669fc0f9b21a6e9523', 
-          isJudge: false})
+          hashes: hand,
+          accessToken: '44947478.9bc60db.7d906225574340669fc0f9b21a6e9523',
+          isJudge: false});
       });
-    } 
+    }
   });
 
   Template.start.events({
     'click button': function(){
-      Rounds.insert({
-        submissions: {},
-        winner: {}
+      Meteor.call('getPrompt', function(error, result){
+        prompt = result;
+        Rounds.insert({
+          id: Rounds.find().count(),
+          prompt: prompt,
+          submissions: {},
+          winner: {}
+        });
       });
-      Meteor.call('setFirstJudge', function(){
-        console.log(Players.find({isJudge: false}).count());
-        console.log(Rounds.find());
-      });
+      Meteor.call('setFirstJudge');
     }
-  })
+  });
 
 }
 
 Meteor.methods({
   setFirstJudge: function () {
-    console.log('sup');
-    //Players.update({}, {isJudge: false}, {multi: true});
     Players.update({id: 0}, {$set: {isJudge: true}});
   },
-  deal: function(){
+  deal: function() {
     var tags = Hashtags.findOne().hashtags;
     var hand = {};
     for(var i = 0; i < 5; i++){
@@ -85,14 +87,43 @@ Meteor.methods({
     }
     Hashtags.update({}, {$set: {hashtags: tags}});
     return hand;
+  },
+  getPrompt: function() {
+    var prompts = Prompts.findOne().prompts;
+    prompt = prompts.pop();
+    Prompts.update({}, {$set: {prompts: prompts}});
+    return prompt;
   }
-})
+});
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
     Players.remove({});
     Rounds.remove({});
     Hashtags.remove({});
+    Prompts.remove({});
+
+    if (Prompts.find().count() === 0) {
+      var prompts = [
+        "Why can't I sleep at night?",
+        "What's that smell?",
+        "What ended my last relationship?",
+        "MTV's new reality show features eight washed-up celebrities living with _____",
+        "During sex, I like to think about _____",
+        "What are my parents hiding from me?",
+        "What will I bring back in time to convince people that I am a powerful wizard?",
+        "But before I kill you, Mr. Bond, I must show you _____",
+        "What did Vin Diesel eat for dinner?",
+        "Why am I sticky?",
+        "What's the new fad diet?",
+        "What's my anti-drug?",
+        "What never fails to liven up the party?",
+        "What am I giving up for lent?",
+        "In Michael Jackson's final moments, he thought about _____",
+        "Daddy, why is Mommy crying?"
+      ];
+      Prompts.insert({prompts: prompts});
+    }
 
     if(Hashtags.find().count() === 0) {
       var hashes = [ 'love',
