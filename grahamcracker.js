@@ -44,6 +44,19 @@ if (Meteor.isClient) {
     return Rounds.findOne({id: Rounds.find().count() - 1}).prompt;
   }
 
+  Template.playerBoard.hashterg = function(){
+    var playershashers = Players.findOne({username: Session.get('username')}).hashes;
+    var result = [];
+    for(var i in playershashers){
+      if(playershashers[i]){
+        result.push(i);
+      }
+    }
+    console.log(result);
+    return result;
+  };
+
+
   Template.login.events({
     'click button': function(){
       var username = document.getElementById("submitUsername").value;
@@ -64,6 +77,7 @@ if (Meteor.isClient) {
 
   Template.start.events({
     'click button': function(){
+
       Meteor.call('getPrompt', function(error, result){
         prompt = result;
         Rounds.insert({
