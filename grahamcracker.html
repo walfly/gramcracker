@@ -68,9 +68,11 @@
     <img src={{this.url}}>
     <div>#{{this.hashtag}}</div>
   {{/each}}
-  {{#each hashterg}}
-    <button data-hashtag="{{this}}">#{{this}}</button>
-  {{/each}}
+  {{#unless chosen}}
+    {{#each hashterg}}
+      <button data-hashtag="{{this}}">#{{this}}</button>
+    {{/each}}
+  {{/unless}}
 </template>
 
 <template name="search">

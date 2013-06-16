@@ -135,11 +135,16 @@ if (Meteor.isClient) {
     return Players.findOne({isJudge: true}).username;
   }
 
+  Template.playerBoard.chosen = function(){
+    return Session.get('chosen');
+  }
+
   Template.search.events({
     'click img': function(e) {
       var submissionURL = $(e.target).attr('src');
       Meteor.call('setSubmission', submissionURL, Session.get('search'), Session.get('username'));
       Session.set('search', null);
+      Session.set('chosen', true);
     }
   });
 
