@@ -33,6 +33,14 @@
 
 <template name="judgeBoard">
   <span>{{prompt}}</span>
+  <span>the number submissions remaining is {{remains}}</span> 
+  {{#each submissions}}
+    {{> image}}
+  {{/each}}
+</template>
+
+<template name="image">
+
 </template>
 
 <template name="login">
