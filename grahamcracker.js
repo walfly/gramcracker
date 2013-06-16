@@ -38,6 +38,19 @@ if (Meteor.isClient) {
     }
   };
 
+  Template.playerBoard.hashterg = function(){
+    var playershashers = Players.findOne({username: Session.get('username')}).hashes;
+    var result = [];
+    for(var i in playershashers){
+      if(playershashers[i]){
+        result.push(i);
+      }
+    }
+    console.log(result);
+    return result;
+  };
+
+
   Template.login.events({
     'click button': function(){
       var username = document.getElementById("submitUsername").value;
@@ -47,13 +60,13 @@ if (Meteor.isClient) {
         Session.set("username", username);
         Players.insert({
           id: Players.find().count(),
-          username: username, 
+          username: username,
           score: 0,
-          hashes: hand, 
+          hashes: hand,
           accessToken: '44947478.9bc60db.7d906225574340669fc0f9b21a6e9523', 
           isJudge: false})
       });
-    } 
+    }
   });
 
   Template.start.events({
@@ -62,10 +75,7 @@ if (Meteor.isClient) {
         submissions: {},
         winner: {}
       });
-      Meteor.call('setFirstJudge', function(){
-        console.log(Players.find({isJudge: false}).count());
-        console.log(Rounds.find());
-      });
+      Meteor.call('setFirstJudge');
     }
   })
 
