@@ -17,7 +17,7 @@ if (Meteor.isClient) {
   };
 
   Template.App.enoughPlayers = function(){
-    return Players.find().count() > 1;
+    return Players.find().count() > 2;
   };
 
   Template.App.player = function(){
@@ -167,7 +167,7 @@ if (Meteor.isClient) {
       var user = this.username;
       var oldJ = Players.findOne({username: Session.get('username')})
       var oldJID = oldJ._id;
-      Players.update({_id: oldJID}, {isJudge: false});
+      Players.update({_id: oldJID}, {$set: {isJudge: false}});
       Meteor.call('updateScore', user);
       Meteor.call('getPrompt', function(error, result){
         prompt = result;
