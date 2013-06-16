@@ -94,17 +94,17 @@ if (Meteor.isClient) {
 
   Template.playerBoard.prompts = function(){
     return Rounds.findOne({id: Rounds.find().count() - 1}).prompta;
-  }
+  };
 
   Template.playerBoard.submissions = function(){
     var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
     return submissions;
-  }
-  
+  };
+
   Template.playerBoard.remains = function(){
     var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
     return (Players.find().count() - 1) - submissions.length;
-  }
+  };
 
   Template.image.url = function(){
     console.log(this);
@@ -143,9 +143,9 @@ if (Meteor.isClient) {
       if(submissions[i].username === Session.get('username')){
         return true;
       }
-    } 
+    }
     return false;
-  }
+  };
 
   Template.search.events({
     'click img': function(e) {
@@ -165,7 +165,20 @@ if (Meteor.isClient) {
   Template.judgeBoard.events({
     'click img': function(){
       var user = this.username;
+      var oldJ = Players.findOne({username: Session.get('username')})
+      var oldJID = oldJ._id;
+      Players.update({_id: oldJID}, {isJudge: false});
       Meteor.call('updateScore', user);
+      Meteor.call('getPrompt', function(error, result){
+        prompt = result;
+        Rounds.insert({
+          id: Rounds.find().count(),
+          prompta: prompt,
+          submissions: [],
+          winner: {}
+        });
+        Meteor.call('setFirstJudge');
+      });
     }
   });
 
@@ -182,7 +195,8 @@ if (Meteor.isClient) {
           score: 0,
           hashes: hand,
           accessToken: '44947478.9bc60db.7d906225574340669fc0f9b21a6e9523',
-          isJudge: false});
+          isJudge: false
+        });
       });
     }
   });
@@ -198,8 +212,8 @@ if (Meteor.isClient) {
           submissions: [],
           winner: {}
         });
+        Meteor.call('setFirstJudge');
       });
-      Meteor.call('setFirstJudge');
     }
   });
 }
@@ -209,7 +223,10 @@ Meteor.methods({
     Players.update({username: user}, {$inc: {score:1}});
   },
   setFirstJudge: function () {
-    Players.update({id: 0}, {$set: {isJudge: true}});
+    var roundNum = Rounds.find().count() - 1;
+    var playerNum = Players.find().count();
+    var currentJ = roundNum%playerNum;
+    Players.update({id: currentJ}, {$set: {isJudge: true}});
   },
   deal: function() {
     var tags = Hashtags.findOne().hashtags;
