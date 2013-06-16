@@ -60,11 +60,13 @@
 </template>
 
 <template name="playerBoard">
-  <div>{{prompts}}</div>
+
+  <div>{{prompt}}</div>
   <div>player {{judger}} is the current judge</div>
   <div>the number submissions remaining is {{remains}}</div> 
   {{#each submissions}}
-    <img src="{{this.url}}">
+    <img src={{this.url}}>
+    <div>#{{this.hashtag}}</div>
   {{/each}}
   {{#each hashterg}}
     <button data-hashtag="{{this}}">#{{this}}</button>
@@ -72,5 +74,11 @@
 </template>
 
 <template name="search">
-  <span>search template aqui</span>
+  <span>{{prompt}}</span>
+  <span>{{hasher}}}</span>
+  <div class="images">
+    {{#each getImages}}
+      <img src="{{this}}">
+    {{/each}}
+  </div>
 </template>
