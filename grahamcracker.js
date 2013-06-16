@@ -17,7 +17,7 @@ if (Meteor.isClient) {
   };
 
   Template.App.enoughPlayers = function(){
-    return Players.find().count() > 2;
+    return Players.find().count() > 1;
   };
 
   Template.App.player = function(){
@@ -169,6 +169,7 @@ if (Meteor.isClient) {
       var oldJID = oldJ._id;
       Players.update({_id: oldJID}, {$set: {isJudge: false}});
       Meteor.call('updateScore', user);
+      Meteor.call('setJudge');
       Meteor.call('getPrompt', function(error, result){
         prompt = result;
         Rounds.insert({
@@ -177,7 +178,6 @@ if (Meteor.isClient) {
           submissions: [],
           winner: {}
         });
-        Meteor.call('setFirstJudge');
       });
     }
   });
@@ -203,7 +203,7 @@ if (Meteor.isClient) {
 
   Template.start.events({
     'click button': function(){
-
+      Meteor.call('setFirstJudge');
       Meteor.call('getPrompt', function(error, result){
         prompt = result;
         Rounds.insert({
@@ -212,7 +212,6 @@ if (Meteor.isClient) {
           submissions: [],
           winner: {}
         });
-        Meteor.call('setFirstJudge');
       });
     }
   });
@@ -222,13 +221,19 @@ Meteor.methods({
   updateScore: function (user) {
     Players.update({username: user}, {$inc: {score:1}});
   },
-  setFirstJudge: function () {
+
+  setJudge: function () {
     var roundNum = Rounds.find().count() - 1;
     var playerNum = Players.find().count();
     var currentJ = roundNum%playerNum;
     Players.update({id: currentJ}, {$set: {isJudge: true}});
   },
-  deal: function() {
+
+  setFirstJudge: function(){
+    Players.update({id: 0}, {$set: {isJudge: true}});
+  },
+
+  deal: function () {
     var tags = Hashtags.findOne().hashtags;
     var hand = {};
     for(var i = 0; i < 5; i++){
@@ -237,12 +242,14 @@ Meteor.methods({
     Hashtags.update({}, {$set: {hashtags: tags}});
     return hand;
   },
+
   getPrompt: function() {
     var prompts = Prompts.findOne().prompts;
     prompt = prompts.pop();
     Prompts.update({}, {$set: {prompts: prompts}});
     return prompt;
   },
+
   setSubmission: function(imgurl, hash, username) {
     var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
     var submission = {url: imgurl, hashtag: hash, username: username};
