@@ -1,5 +1,6 @@
 Players = new Meteor.Collection('players');
 Rounds = new Meteor.Collection('rounds');
+Hashtags = new Meteor.Collection('hashtags');
 if (Meteor.isClient) {
 
 
@@ -20,7 +21,7 @@ if (Meteor.isClient) {
       var judge = Players.findOne({username: Session.get('username')});
       if(!judge.isJudge && Rounds.find().count()){
         return true;
-      } 
+      }
     } else {
       return false;
     }
@@ -76,6 +77,111 @@ if (Meteor.isServer) {
   Meteor.startup(function () {
     Players.remove({});
     Rounds.remove({});
-    // code to run on server at startup
+
+    if(Hashtags.find().count() === 0) {
+      var hashes = [ 'love',
+                    'instagood',
+                    'me',
+                    'cute',
+                    'tbt',
+                    'eyes',
+                    'statigram',
+                    'throwbackthursday',
+                    'photooftheday',
+                    'nice',
+                    'follow',
+                    'beautiful',
+                    'happy',
+                    'all_shots',
+                    'harrystyles',
+                    'girl',
+                    'instamood',
+                    'picoftheday',
+                    'instadaily',
+                    'niallhoran',
+                    'instago',
+                    'igers',
+                    'jj_forum',
+                    'like',
+                    'followme',
+                    'fashion',
+                    'fun',
+                    'smile',
+                    'bestoftheday',
+                    'iphonesia',
+                    'summer',
+                    'nofilter',
+                    'food',
+                    'friends',
+                    'lol',
+                    'sun',
+                    'instagramhub',
+                    'iphoneonly',
+                    'sky',
+                    'webstagram',
+                    'pretty',
+                    'picstitch',
+                    'tweegram',
+                    'my',
+                    'hair',
+                    'jj',
+                    'bored',
+                    'life',
+                    'swag',
+                    'cool',
+                    'funny',
+                    'igdaily',
+                    'family',
+                    'repost',
+                    'photo',
+                    'pink',
+                    'amazing',
+                    'blue',
+                    'girls',
+                    'hot',
+                    'baby',
+                    'instagramers',
+                    'black',
+                    'art',
+                    'instalove',
+                    'zaynmalik',
+                    'party',
+                    'night',
+                    'best',
+                    'music',
+                    'louistomlinson',
+                    'beach',
+                    'nature',
+                    'liampayne',
+                    'i',
+                    'awesome',
+                    'instacollage',
+                    'blonde',
+                    'bestfriends',
+                    '1d',
+                    'puppy',
+                    'dog',
+                    'flowers',
+                    'work',
+                    'style',
+                    'red',
+                    'instacool',
+                    'makeup',
+                    'shoes',
+                    'insta',
+                    'onedirection',
+                    'adorable',
+                    'white',
+                    'birthday',
+                    'followback',
+                    'friend',
+                    '10likes',
+                    'likeforlike',
+                    'gang_family',
+                    'boyfriend'];
+      for(var i = 0; i < hashes.length; i++){
+        Hashtags.insert({id: i, hashtag: hashes[i]});
+      }
+    }
   });
 }
