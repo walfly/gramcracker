@@ -21,7 +21,8 @@
   {{/unless}}
   {{#if judge}}
 	  {{> judgeBoard}}
-  {{else}}
+  {{/if}}
+  {{#if player}}
 	  {{#if search}}
 		  {{> search}}
 	  {{else}}
@@ -51,4 +52,4 @@
 
 <template name="playerBoard">
   <span>you a player bitch</span>
-</template>
+</templat

@@ -15,9 +15,23 @@ if (Meteor.isClient) {
     return Players.find().count() > 3;
   }
 
+  Template.App.player = function(){
+    if(Session.get('username')){
+      var judge = Players.findOne({username: Session.get('username')});
+      if(!judge.isJudge && Rounds.find().count()){
+        return true;
+      } 
+    } else {
+      return false;
+    }
+  };
+
   Template.App.judge = function(){
-    if(Players.find({username: Session.get('username')}).isJudge){
-      return true;
+    if(Session.get('username')){
+      var judge = Players.findOne({username: Session.get('username')});
+      if(judge.isJudge){
+        return true;
+      }
     } else {
       return false;
     }
