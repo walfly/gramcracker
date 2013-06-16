@@ -44,7 +44,8 @@ if (Meteor.isClient) {
 
 
   Template.judgeBoard.prompts = function(){
-    return Rounds.findOne({id: Rounds.find().count() - 1}).prompta;
+    var round = Rounds.findOne({id: Rounds.find().count() - 1});
+    return round.prompta;
   };
 
   Template.judgeBoard.submissions = function(){
@@ -58,7 +59,9 @@ if (Meteor.isClient) {
   };
 
   Template.search.prompts = function(){
-    return Rounds.findOne({id: Rounds.find().count() - 1}).prompta;
+    var count = Rounds.find().count()
+    var round = Rounds.findOne({id: Rounds.find().count() - 1});
+    return round.prompta;
   };
 
   Template.search.hasher = function() {
@@ -93,7 +96,8 @@ if (Meteor.isClient) {
   };
 
   Template.playerBoard.prompts = function(){
-    return Rounds.findOne({id: Rounds.find().count() - 1}).prompta;
+    var round = Rounds.findOne({id: Rounds.find().count() - 1});
+    return round.prompta;
   };
 
   Template.playerBoard.submissions = function(){
@@ -104,10 +108,6 @@ if (Meteor.isClient) {
   Template.playerBoard.remains = function(){
     var submissions = Rounds.findOne({id: Rounds.find().count() - 1}).submissions;
     return (Players.find().count() - 1) - submissions.length;
-  };
-
-  Template.image.url = function(){
-    console.log(this);
   };
 
   Template.App.search = function() {
@@ -133,7 +133,8 @@ if (Meteor.isClient) {
 
 
   Template.playerBoard.judger = function(){
-    return Players.findOne({isJudge: true}).username;
+    var player = Players.findOne({isJudge: true});
+    return player.username;
   }
 
   Template.playerBoard.chosen = function(){
@@ -165,18 +166,18 @@ if (Meteor.isClient) {
   Template.judgeBoard.events({
     'click img': function(){
       var user = this.username;
-      var oldJ = Players.findOne({username: Session.get('username')})
-      var oldJID = oldJ._id;
-      Players.update({_id: oldJID}, {$set: {isJudge: false}});
-      Meteor.call('updateScore', user);
-      Meteor.call('setJudge');
-      Meteor.call('getPrompt', function(error, result){
-        prompt = result;
-        Rounds.insert({
-          id: Rounds.find().count(),
-          prompta: prompt,
-          submissions: [],
-          winner: {}
+      Meteor.call('removeJudge', function(){
+        Meteor.call('updateScore', user);
+        Meteor.call('setJudge', function(){
+          Meteor.call('getPrompt', function(error, result){
+            prompt = result;
+            Rounds.insert({
+              id: Rounds.find().count(),
+              prompta: prompt,
+              submissions: [],
+              winner: {}
+            });
+          });
         });
       });
     }
@@ -221,9 +222,13 @@ Meteor.methods({
   updateScore: function (user) {
     Players.update({username: user}, {$inc: {score:1}});
   },
+  
+  removeJudge: function(){
+    Players.update({}, {$set: {isJudge: false}}, {multi: true}); 
+  },
 
   setJudge: function () {
-    var roundNum = Rounds.find().count() - 1;
+    var roundNum = Rounds.find().count();
     var playerNum = Players.find().count();
     var currentJ = roundNum%playerNum;
     Players.update({id: currentJ}, {$set: {isJudge: true}});
