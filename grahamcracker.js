@@ -72,7 +72,7 @@ if (Meteor.isClient) {
     return Players.findOne({username: Session.get('username')}).accessToken;
   };
 
-  Template.search.getImages = function() {
+  Template.images.getImages = function() {
     var hashtagQuery = Session.get('search');
     var accessToken = Players.findOne({username: Session.get('username')}).accessToken;
     console.log('hash', hashtagQuery);
@@ -157,7 +157,7 @@ if (Meteor.isClient) {
 
   };
 
-  Template.search.events({
+  Template.images.events({
     'click img': function(e) {
       var submissionURL = $(e.target).attr('src');
       Meteor.call('setSubmission', submissionURL, Session.get('search'), Session.get('username'));
