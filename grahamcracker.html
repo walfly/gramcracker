@@ -26,6 +26,7 @@
   {{#if player}}
 	  {{#if search}}
 		  {{> search}}
+      {{>images}}
 	  {{else}}
 		  {{> playerBoard}}
     {{/if}}
@@ -90,13 +91,6 @@
 <template name="search">
   <h2>{{prompts}}</h2>
   <h3>{{hasher}}}</h3>
-  <div class="search-images">
-    {{#each getImages}}
-      <div class="image">
-        <img src="{{this}}">
-      </div>
-    {{/each}}
-  </div>
 </template>
 
 <template name="scoreboard">
@@ -106,6 +100,18 @@
     {{/each}}
   </div>
 </template>
+
+<template name = "images">
+    <div class="search-images">
+  </div>
+    {{#each getImages}}
+        <div class="image">
+          <img src="{{this}}">
+        </div>
+    {{/each}}
+
+</template>
+
 
 <template name="player">
   <div class="player">
